@@ -1,90 +1,56 @@
 require('dotenv').config();
 const TelegramBot = require('node-telegram-bot-api');
 const cron = require('node-cron');
+const http = require('http');
 
 const TOKEN = process.env.BOT_TOKEN;
 const CHAT_ID = process.env.CHAT_ID;
+const PORT = process.env.PORT || 8000;
 
+if (!TOKEN || !CHAT_ID) {
+	throw new Error('BOT_TOKEN or CHAT_ID is not set');
+}
+
+// Telegram bot
 const bot = new TelegramBot(TOKEN, { polling: true });
-const workDayDone = 'https://i.imgur.com/XwIe1vC.jpeg';
 
+// Cron jobs
 cron.schedule(
 	'00 09 * * 1-5',
 	() => {
 		bot.sendMessage(
 			CHAT_ID,
-			'Доброе утро! ☀️ Начинаем рабочий день 🏠👨‍💻Не забудьте нажать кнопку «Начать рабочий день» в Bitrix24. Продуктивного и удачного дня! 😊',
+			'Доброе утро! ☀️ Начинаем рабочий день 🏠👨‍💻\nНе забудьте нажать кнопку «Начать рабочий день» в Bitrix24.',
 		);
 	},
-	{
-		timezone: 'Europe/Moscow',
-	},
+	{ timezone: 'Europe/Moscow' },
 );
 
 cron.schedule(
-	'00 18 * * 1-5',
+	'20 18 * * 1-5',
 	() => {
 		bot.sendMessage(
-			CHAT_ID, // ID чата (группы)
-			'Рабочий день завершён! ✅ Не забудьте отметить это в Bitrix24. Отличного вечера! 😊',
+			CHAT_ID,
+			'Рабочий день завершён! ✅\nНе забудьте отметить это в Bitrix24. Отличного вечера! 😊',
 		);
 	},
-	{
-		timezone: 'Europe/Moscow',
-	},
+	{ timezone: 'Europe/Moscow' },
 );
 
+// Commands
 bot.onText(/\/start/, (msg) => {
 	bot.sendMessage(
 		msg.chat.id,
-		'Привет! Я бот DN.ru, буду присылать вам сообщения о начале рабочего дня и его завершении, каждый будний день. 🚀',
+		'Привет! Я бот DN.ru 👋\nБуду присылать уведомления о начале и конце рабочего дня.',
 	);
 });
 
-// cron.schedule(
-// 	'00 09 * * 1-5',
-// 	() => {
-// 		bot.sendMessage(
-// 			'-4605567973',
-// 			'Доброе утро! ☀️ Начинаем рабочий день 🏠👨‍💻Не забудьте нажать кнопку «Начать рабочий день» в Bitrix24. Продуктивного и удачного дня! 😊',
-// 		);
-// 	},
-// 	{
-// 		timezone: 'Europe/Moscow',
-// 	},
-// );
-
-// cron.schedule(
-// 	'00 18 * * 1-5',
-// 	() => {
-// 		bot.sendPhoto(
-// 			'-4605567973', // ID чата (группы)
-// 			workDayDone,
-// 			{
-// 				caption:
-// 					'Рабочий день завершён! ✅ Не забудьте отметить это в Bitrix24. Отличного вечера! 😊',
-// 			},
-// 		);
-// 	},
-// 	{
-// 		timezone: 'Europe/Moscow',
-// 	},
-// );
-
-console.log('🤖 Бот запущен...');
-
-process.on('uncaughtException', (err) => {
-	console.error('❌ Необработанная ошибка:', err);
+// Telegram polling errors
+bot.on('polling_error', (err) => {
+	console.error('❌ Polling error:', err.message);
 });
 
-process.on('unhandledRejection', (reason, promise) => {
-	console.error('❌ Обещание не выполнено:', reason);
-});
-
-const http = require('http');
-
-const PORT = process.env.PORT || 8000;
-
+// Health check server (Koyeb requirement)
 http
 	.createServer((req, res) => {
 		res.writeHead(200);
@@ -94,9 +60,4 @@ http
 		console.log(`🌐 Health check server on port ${PORT}`);
 	});
 
-setInterval(
-	() => {
-		console.log('✅ Бот активен, и не спит...');
-	},
-	60 * 60 * 1000,
-);
+console.log('🤖 Бот запущен...');
