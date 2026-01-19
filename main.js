@@ -2,8 +2,8 @@ require('dotenv').config();
 const TelegramBot = require('node-telegram-bot-api');
 const cron = require('node-cron');
 
-const TOKEN = '7792964554:AAFStNssyaEkRUhSUjCf7BLi8YMQ3Qa23JI';
-const CHAT_ID = '-4605567973';
+const TOKEN = process.env.BOT_TOKEN;
+const CHAT_ID = process.env.CHAT_ID;
 
 const bot = new TelegramBot(TOKEN, { polling: true });
 const workDayDone = 'https://i.imgur.com/XwIe1vC.jpeg';
