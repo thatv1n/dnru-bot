@@ -22,7 +22,7 @@ cron.schedule(
 );
 
 cron.schedule(
-	'05 18 * * 1-5',
+	'00 18 * * 1-5',
 	() => {
 		bot.sendMessage(
 			CHAT_ID, // ID чата (группы)
