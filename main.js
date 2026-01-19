@@ -83,7 +83,7 @@ process.on('unhandledRejection', (reason, promise) => {
 
 setInterval(
 	() => {
-		console.log('✅ Бот активен, Railway не засыпает');
+		console.log('✅ Бот активен, и не спит');
 	},
 	60 * 60 * 1000,
 );
