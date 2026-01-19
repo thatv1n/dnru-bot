@@ -81,6 +81,19 @@ process.on('unhandledRejection', (reason, promise) => {
 	console.error('❌ Обещание не выполнено:', reason);
 });
 
+const http = require('http');
+
+const PORT = process.env.PORT || 8000;
+
+http
+	.createServer((req, res) => {
+		res.writeHead(200);
+		res.end('OK');
+	})
+	.listen(PORT, () => {
+		console.log(`🌐 Health check server on port ${PORT}`);
+	});
+
 setInterval(
 	() => {
 		console.log('✅ Бот активен, и не спит...');
