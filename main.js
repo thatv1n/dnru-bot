@@ -81,9 +81,9 @@ process.on('unhandledRejection', (reason, promise) => {
 	console.error('❌ Обещание не выполнено:', reason);
 });
 
-// setInterval(
-// 	() => {
-// 		console.log('✅ Бот активен, Railway не засыпает');
-// 	},
-// 	60 * 60 * 1000,
-// );
+setInterval(
+	() => {
+		console.log('✅ Бот активен, Railway не засыпает');
+	},
+	60 * 60 * 1000,
+);
